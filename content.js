@@ -87,7 +87,8 @@ window.__C={
    "Kotlin",
    "PHP",
    "Python",
-   "Ktor"
+   "Ktor",
+   "Android studio"
   ],
   "mid": [
    "HTML",
