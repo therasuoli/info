@@ -1,5 +1,5 @@
 window.__C={
- "photo": "photo.jpg?v=1793755869027",
+ "photo": "photo.jpg?v=1793756012569",
  "years": 13,
  "texts": {
   "fa": {
