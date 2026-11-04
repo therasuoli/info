@@ -182,6 +182,25 @@ window.__C={
     "en": "In development",
     "ar": "قيد التطوير"
    }
+  },
+  {
+   "icon": "📝",
+   "url": "",
+   "name": {
+    "fa": "همیار دبستانی ",
+    "en": "Hamyar dabestani",
+    "ar": "مساعد المرحلة الابتدائية"
+   },
+   "desc": {
+    "fa": "آموزش مبانی پایه آموزش ، مکمل آموزشی",
+    "en": "Teaching basic educational foundations, educational supplement\n",
+    "ar": "تعليم الأساسيات التعليمية الأساسية، مُكمّل تعليمي"
+   },
+   "status": {
+    "fa": "در حال توسعه",
+    "en": "In development",
+    "ar": "قيد التطوير"
+   }
   }
  ],
  "social": [
