@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow,noarchive">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src 'self' data: blob:; connect-src https://api.github.com; base-uri 'none'; form-action 'none'">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#05050c">
+<title>پنل مدیریت</title>
+<style>
+:root{--bg:#05050c;--fg:#f1f2ff;--mut:#a3a8cc;--a:#7c5cff;--b:#00e5c7;--c:#ff4fa3;--card:rgba(255,255,255,.05);--bd:rgba(255,255,255,.14);--err:#ff6b8a}
+*{box-sizing:border-box;margin:0}
+body{font-family:Vazirmatn,Tahoma,sans-serif;background:var(--bg);color:var(--fg);line-height:1.8;min-height:100vh;padding:0 0 90px}
+body:before{content:"";position:fixed;inset:0;pointer-events:none;background:radial-gradient(40% 35% at 20% 10%,rgba(124,92,255,.22),transparent 70%),radial-gradient(35% 30% at 85% 80%,rgba(0,229,199,.13),transparent 70%)}
+#app{position:relative;max-width:900px;margin:auto;padding:18px}
+h1{font-size:1.4rem;font-weight:900}
+h2{font-size:1.1rem;margin-bottom:12px}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:20px;padding:20px;margin-bottom:16px}
+.lock{max-width:440px;margin:8vh auto 0}
+.lock h1{margin-bottom:6px}
+.sub{color:var(--mut);font-size:.88rem;margin-bottom:14px}
+label{display:block;font-size:.85rem;color:var(--mut);margin:12px 0 4px}
+input,textarea,select{width:100%;font:inherit;color:var(--fg);background:rgba(255,255,255,.06);border:1px solid var(--bd);border-radius:12px;padding:10px 12px;outline:none}
+input:focus,textarea:focus,select:focus{border-color:var(--b)}
+select option{background:#14142a}
+textarea{min-height:110px;resize:vertical}
+.ltr{direction:ltr;text-align:left}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:10px 18px;color:#fff;background:linear-gradient(135deg,var(--a),var(--c));font-weight:700}
+button.o{background:var(--card);border:1px solid var(--bd)}
+button.d{background:rgba(255,107,138,.18);border:1px solid var(--err);color:var(--err)}
+button.sm{padding:5px 12px;font-size:.82rem}
+button:disabled{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.row>*{flex:0 0 auto}
+.msg{margin-top:12px;font-size:.9rem;min-height:1.4em}
+.msg.e{color:var(--err)}.msg.ok{color:var(--b)}
+.bar{position:sticky;top:0;z-index:10;display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;padding:12px 0;background:linear-gradient(var(--bg) 70%,transparent)}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:6px 0 16px}
+.tabs button{background:var(--card);border:1px solid var(--bd);padding:7px 16px;font-weight:500}
+.tabs button.on{background:linear-gradient(135deg,var(--a),var(--b))}
+.item{border:1px solid var(--bd);border-radius:16px;padding:14px;margin-bottom:12px;background:rgba(255,255,255,.03)}
+.item .head{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;gap:8px;flex-wrap:wrap}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.lg{font:700 .72rem 'Courier New',monospace;color:var(--b);letter-spacing:.1em}
+.photo{width:160px;aspect-ratio:4/5;object-fit:cover;border-radius:18px;border:1px solid var(--bd);display:block;background:#111}
+.note{font-size:.85rem;color:var(--mut);border-right:3px solid var(--a);padding:6px 12px;margin:10px 0}
+#dirty{color:var(--c);font-size:.85rem}
+@media(max-width:640px){.grid3,.grid2{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(()=>{
+"use strict";
+const LS="adm_v1",LK="adm_lock",LANGS=["fa","en","ar"],LN={fa:"فارسی",en:"English",ar:"العربية"};
+const KEYS=[
+["title","عنوان صفحه (تب مرورگر)"],["name","نام (عنوان بزرگ صفحه اول)"],["lead","توضیح زیر نام",1],
+["n1","منو: خانه"],["n2","منو: درباره"],["n3","منو: اپ‌ها"],["n4","منو: تماس"],
+["b1","دکمه اول"],["b2","دکمه دوم"],
+["h_about","عنوان بخش درباره"],["s_about","زیرعنوان درباره"],["c2h","عنوان کارت بیوگرافی"],["c2","متن بیوگرافی",1],["c1","متن کنار عدد سال‌ها"],
+["sk1h","عنوان مهارت‌های تخصصی"],["sk2h","عنوان مهارت‌های جانبی"],["tl_h","عنوان مسیر من"],["soon","پیام «به‌زودی»",1],
+["h_apps","عنوان بخش اپلیکیشن‌ها"],["s_apps","زیرعنوان اپلیکیشن‌ها"],["apps_note","یادداشت پایین اپلیکیشن‌ها",1],
+["h_ct","عنوان بخش تماس"],["s_ct","زیرعنوان تماس",1],["bridge","عنوان «پل ارتباطی»"]];
+const SOC=["instagram","linkedin","email","github","telegram","whatsapp","link"];
+const app=document.getElementById("app");
+const enc=new TextEncoder(),dec=new TextDecoder();
+let S=null,C=null,SHA=null,tab="general",tlang="fa",dirty=false,idle=null;
+
+/* ---------- helpers ---------- */
+const h=(t,a={},...c)=>{const e=document.createElement(t);for(const k in a){const v=a[k];if(k==="class")e.className=v;else if(k.startsWith("on"))e[k]=v;else if(k==="value")e.value=v;else if(v===true)e.setAttribute(k,"");else if(v!==false&&v!=null)e.setAttribute(k,v)}c.flat(9).forEach(x=>{if(x!=null&&x!==false)e.append(x.nodeType?x:String(x))});return e};
+const b64=u=>{let s="";for(let i=0;i<u.length;i+=8192)s+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return btoa(s)};
+const unb64=s=>Uint8Array.from(atob(s.replace(/\s/g,"")),c=>c.charCodeAt(0));
+const sleep=ms=>new Promise(r=>setTimeout(r,ms));
+async function kdf(pw,salt){const k=await crypto.subtle.importKey("raw",enc.encode(pw),"PBKDF2",false,["deriveKey"]);
+ return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:600000,hash:"SHA-256"},k,{name:"AES-GCM",length:256},false,["encrypt","decrypt"])}
+async function seal(obj,pw){const salt=crypto.getRandomValues(new Uint8Array(16)),iv=crypto.getRandomValues(new Uint8Array(12)),key=await kdf(pw,salt);
+ const d=await crypto.subtle.encrypt({name:"AES-GCM",iv},key,enc.encode(JSON.stringify(obj)));return{s:b64(salt),i:b64(iv),d:b64(new Uint8Array(d))}}
+async function unseal(box,pw){const key=await kdf(pw,unb64(box.s));const d=await crypto.subtle.decrypt({name:"AES-GCM",iv:unb64(box.i)},key,unb64(box.d));return JSON.parse(dec.decode(d))}
+const getBox=()=>{try{return JSON.parse(localStorage.getItem(LS))}catch(e){return null}};
+
+/* ---------- GitHub ---------- */
+async function gh(method,path,body){
+ const r=await fetch("https://api.github.com/repos/"+S.owner+"/"+S.repo+path,{method,headers:{"Authorization":"Bearer "+S.token,"Accept":"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28"},body:body?JSON.stringify(body):undefined,cache:"no-store"});
+ let j=null;try{j=await r.json()}catch(e){}
+ if(!r.ok){const er=new Error((j&&j.message)||("HTTP "+r.status));er.status=r.status;throw er}
+ return j}
+async function loadContent(){
+ const j=await gh("GET","/contents/content.js?t="+Date.now());SHA=j.sha;
+ const t=dec.decode(unb64(j.content));
+ C=JSON.parse(t.replace(/^[^{]*/,"").replace(/;\s*$/,""));
+ C.texts=C.texts||{};LANGS.forEach(l=>C.texts[l]=C.texts[l]||{});
+ C.skills=C.skills||{pro:[],mid:[]};C.timeline=C.timeline||[];C.apps=C.apps||[];C.social=C.social||[]}
+async function putFile(path,b64c,msg,sha){return gh("PUT","/contents/"+path,{message:msg,content:b64c,...(sha?{sha}:{})})}
+async function saveContent(){
+ const text="window.__C="+JSON.stringify(C,null,1)+";\n",c=b64(enc.encode(text));
+ try{const r=await putFile("content.js",c,"Update site content via admin panel",SHA);SHA=r.content.sha}
+ catch(e){if(e.status===409||e.status===422){const j=await gh("GET","/contents/content.js?t="+Date.now());const r=await putFile("content.js",c,"Update site content via admin panel",j.sha);SHA=r.content.sha}else throw e}
+ setDirty(false)}
+
+/* ---------- lock / setup ---------- */
+function lockScreen(){
+ clearTimeout(idle);S=null;C=null;
+ const box=getBox();app.replaceChildren(box?loginView():setupView())}
+function setupView(){
+ const m=h("div",{class:"msg"});
+ const o=h("input",{class:"ltr",value:"therasuoli",autocomplete:"off"}),r=h("input",{class:"ltr",value:"therasuoli.github.io",autocomplete:"off"}),
+ t=h("input",{class:"ltr",type:"password",autocomplete:"off",placeholder:"github_pat_..."}),p1=h("input",{type:"password",autocomplete:"new-password"}),p2=h("input",{type:"password",autocomplete:"new-password"});
+ const go=h("button",{onclick:async()=>{
+  m.className="msg";m.textContent="";
+  if(p1.value.length<10){m.className="msg e";m.textContent="رمز حداقل ۱۰ کاراکتر باشد.";return}
+  if(p1.value!==p2.value){m.className="msg e";m.textContent="تکرار رمز یکسان نیست.";return}
+  go.disabled=true;m.textContent="در حال بررسی توکن…";
+  try{S={owner:o.value.trim(),repo:r.value.trim(),token:t.value.trim()};
+   const j=await gh("GET","");if(!j.permissions||!j.permissions.push)throw new Error("این توکن اجازه نوشتن (Contents: Read and write) روی مخزن ندارد.");
+   m.textContent="در حال رمزنگاری…";const box=await seal(S,p1.value);localStorage.setItem(LS,JSON.stringify(box));
+   t.value=p1.value=p2.value="";await enter()}
+  catch(e){S=null;m.className="msg e";m.textContent="خطا: "+e.message;go.disabled=false}}},"ساخت و ورود");
+ return h("div",{class:"card lock"},h("h1",{},"راه‌اندازی اولیه"),h("p",{class:"sub"},"فقط یک‌بار روی هر دستگاه. توکن با رمز شما رمزنگاری می‌شود و روی همین مرورگر می‌ماند؛ در گیت‌هاب هیچ چیزی ذخیره نمی‌شود."),
+ h("label",{},"نام کاربری گیت‌هاب"),o,h("label",{},"نام مخزن"),r,h("label",{},"توکن دسترسی (Fine-grained، فقط همین مخزن، Contents: Read and write)"),t,
+ h("label",{},"رمز پنل (حداقل ۱۰ کاراکتر)"),p1,h("label",{},"تکرار رمز"),p2,h("div",{class:"row",style:"margin-top:16px"},go),m)}
+function loginView(){
+ const m=h("div",{class:"msg"}),p=h("input",{type:"password",autocomplete:"current-password",autofocus:true});
+ const go=h("button",{onclick:async()=>{
+  const lu=+localStorage.getItem(LK)||0,now=Date.now();
+  if(lu>now){m.className="msg e";m.textContent="لطفاً "+Math.ceil((lu-now)/1000)+" ثانیه صبر کنید.";return}
+  go.disabled=true;m.className="msg";m.textContent="در حال بررسی…";
+  try{S=await unseal(getBox(),p.value);p.value="";localStorage.removeItem(LK);sessionStorage.removeItem("f");await enter()}
+  catch(e){S=null;const f=(+sessionStorage.getItem("f")||0)+1;sessionStorage.setItem("f",f);
+   localStorage.setItem(LK,String(Date.now()+Math.min(2**f,300)*1000));m.className="msg e";m.textContent=(e.name==="OperationError"||e instanceof DOMException)?"رمز اشتباه است.":("خطا: "+e.message);go.disabled=false;p.value=""}}},"ورود");
+ p.onkeydown=e=>{if(e.key==="Enter")go.click()};
+ return h("div",{class:"card lock"},h("h1",{},"پنل مدیریت"),h("p",{class:"sub"},"برای ادامه رمز را وارد کنید."),h("label",{},"رمز"),p,h("div",{class:"row",style:"margin-top:16px"},go),m,
+ h("p",{class:"sub",style:"margin-top:18px"},"دستگاه جدید یا فراموشی رمز؟ ",h("a",{href:"#",style:"color:var(--b)",onclick:e=>{e.preventDefault();if(confirm("اطلاعات ذخیره‌شده این دستگاه حذف و راه‌اندازی از نو انجام می‌شود. ادامه؟")){localStorage.removeItem(LS);lockScreen()}}},"حذف اطلاعات این دستگاه")))}
+async function enter(){
+ app.replaceChildren(h("div",{class:"card lock"},h("p",{},"در حال بارگذاری محتوا…")));
+ try{await loadContent()}catch(e){
+  app.replaceChildren(h("div",{class:"card lock"},h("p",{class:"msg e"},"خطا در خواندن content.js: "+e.message),h("p",{class:"sub"},"مطمئن شوید فایل content.js در ریشه مخزن وجود دارد."),h("button",{onclick:lockScreen},"بازگشت")));return}
+ tab="general";poke();render()}
+function poke(){clearTimeout(idle);idle=setTimeout(()=>{if(dirty)return poke();lockScreen()},15*60*1000)}
+["pointerdown","keydown"].forEach(ev=>addEventListener(ev,()=>{if(S)poke()},{passive:true}));
+addEventListener("beforeunload",e=>{if(dirty){e.preventDefault();e.returnValue=""}});
+function setDirty(v){dirty=v;const d=document.getElementById("dirty");if(d)d.textContent=v?"● تغییرات ذخیره‌نشده":""}
+
+/* ---------- field builders ---------- */
+function F(label,obj,key,o={}){
+ const el=o.area?h("textarea",{class:o.ltr?"ltr":""}):h("input",{class:o.ltr?"ltr":"",maxlength:o.max||null});
+ el.value=obj[key]==null?"":obj[key];if(o.dir)el.dir=o.dir;
+ el.oninput=()=>{obj[key]=el.value;setDirty(true)};return h("div",{},h("label",{},label),el)}
+const ML=(label,obj,key,area)=>{obj[key]=obj[key]||{};return h("div",{},h("label",{},label),h("div",{class:area?"":"grid3"},LANGS.map(l=>h("div",{},h("span",{class:"lg"},l.toUpperCase()),F("",obj[key],l,{area,dir:l==="en"?"ltr":"rtl"})))))};
+function mv(arr,i,d){const j=i+d;if(j<0||j>=arr.length)return;[arr[i],arr[j]]=[arr[j],arr[i]];setDirty(true);render()}
+function ctl(arr,i){return h("div",{class:"row"},h("button",{class:"o sm",onclick:()=>mv(arr,i,-1)},"▲"),h("button",{class:"o sm",onclick:()=>mv(arr,i,1)},"▼"),h("button",{class:"d sm",onclick:()=>{if(confirm("حذف شود؟")){arr.splice(i,1);setDirty(true);render()}}},"حذف"))}
+
+/* ---------- tabs ---------- */
+const TABS=[["general","عمومی و عکس"],["texts","متن‌ها"],["skills","مهارت‌ها"],["timeline","مسیر من"],["apps","اپلیکیشن‌ها"],["contact","ارتباطات"],["security","امنیت"]];
+function render(){
+ poke();const y=scrollY;
+ const save=h("button",{id:"save",onclick:async()=>{save.disabled=true;msg.className="msg";msg.textContent="در حال ذخیره…";
+  try{await saveContent();msg.className="msg ok";msg.textContent="ذخیره شد. انتشار روی سایت حدود ۱ تا ۲ دقیقه طول می‌کشد."}catch(e){msg.className="msg e";msg.textContent="خطا: "+e.message}save.disabled=false}},"ذخیره و انتشار");
+ const msg=h("div",{class:"msg",style:"margin:0"});
+ const body=({general,texts,skills,timeline,apps,contact,security})[tab]();
+ app.replaceChildren(
+  h("div",{class:"bar"},h("div",{},h("h1",{},"پنل مدیریت سایت"),h("span",{id:"dirty"},dirty?"● تغییرات ذخیره‌نشده":"")),h("div",{class:"row"},msg,save,h("button",{class:"o",onclick:()=>{if(!dirty||confirm("تغییرات ذخیره‌نشده از بین می‌رود. خروج؟"))lockScreen()}},"قفل"))),
+  h("div",{class:"tabs"},TABS.map(([k,n])=>h("button",{class:k===tab?"on":"",onclick:()=>{tab=k;render();scrollTo(0,0)}},n))),body);
+ scrollTo(0,y)}
+
+function general(){
+ const img=h("img",{class:"photo",alt:"",src:C.photo||""});const m=h("div",{class:"msg"});
+ const inp=h("input",{type:"file",accept:"image/*",onchange:async()=>{const f=inp.files[0];if(!f)return;m.className="msg";m.textContent="در حال آماده‌سازی و آپلود…";
+  try{const blob=await shrink(f);const u8=new Uint8Array(await blob.arrayBuffer());let sha;
+   try{sha=(await gh("GET","/contents/photo.jpg?t="+Date.now())).sha}catch(e){if(e.status!==404)throw e}
+   await putFile("photo.jpg",b64(u8),"Update photo via admin panel",sha);
+   C.photo="photo.jpg?v="+Date.now();img.src=URL.createObjectURL(blob);await saveContent();m.className="msg ok";m.textContent="عکس جایگزین و منتشر شد."}
+  catch(e){m.className="msg e";m.textContent="خطا: "+e.message}}});
+ const yo={years:C.years||13};
+ return h("div",{},h("div",{class:"card"},h("h2",{},"عکس پروفایل"),img,h("label",{},"انتخاب عکس جدید (خودکار کوچک و فشرده می‌شود)"),inp,m,h("p",{class:"note"},"عکس با نام photo.jpg جایگزین می‌شود؛ پیش‌نمایش شبکه‌های اجتماعی (og:image) هم همین عکس را می‌گیرد.")),
+  h("div",{class:"card"},h("h2",{},"عدد «سال برنامه‌نویسی»"),h("label",{},"عدد (فقط رقم)"),(()=>{const e=h("input",{type:"number",min:0,max:99,value:yo.years});e.oninput=()=>{C.years=Math.max(0,Math.min(99,parseInt(e.value)||0));setDirty(true)};return e})()))}
+async function shrink(file){
+ const url=URL.createObjectURL(file),im=new Image();await new Promise((ok,no)=>{im.onload=ok;im.onerror=()=>no(new Error("فایل تصویر معتبر نیست"));im.src=url});
+ const k=Math.min(1,1600/Math.max(im.width,im.height)),c=document.createElement("canvas");c.width=Math.round(im.width*k);c.height=Math.round(im.height*k);
+ const x=c.getContext("2d");x.fillStyle="#fff";x.fillRect(0,0,c.width,c.height);x.drawImage(im,0,0,c.width,c.height);URL.revokeObjectURL(url);
+ return new Promise((ok,no)=>c.toBlob(b=>b?ok(b):no(new Error("تبدیل ناموفق")),"image/jpeg",.88))}
+
+function texts(){
+ return h("div",{class:"card"},h("div",{class:"tabs"},LANGS.map(l=>h("button",{class:l===tlang?"on":"",onclick:()=>{tlang=l;render()}},LN[l]))),
+  KEYS.map(([k,n,a])=>F(n+"  ("+k+")",C.texts[tlang],k,{area:a,dir:tlang==="en"?"ltr":"rtl"})))}
+
+function skills(){
+ const mk=(t,k)=>{const e=h("input",{class:"ltr",value:(C.skills[k]||[]).join(", ")});e.oninput=()=>{C.skills[k]=e.value.split(/[,،\n]/).map(s=>s.trim()).filter(Boolean);setDirty(true)};return h("div",{class:"card"},h("h2",{},t),h("label",{},"با کاما جدا کنید"),e)};
+ return h("div",{},mk("مهارت‌های تخصصی","pro"),mk("مهارت‌های جانبی","mid"))}
+
+function timeline(){
+ return h("div",{},C.timeline.map((it,i)=>h("div",{class:"item"},h("div",{class:"head"},h("b",{},"مرحله "+(i+1)),ctl(C.timeline,i)),ML("بازه / سال",it,"y"),ML("توضیح",it,"t",1))),
+  h("button",{onclick:()=>{C.timeline.push({y:{fa:"",en:"",ar:""},t:{fa:"",en:"",ar:""}});setDirty(true);render()}},"+ افزودن مرحله"))}
+
+function apps(){
+ return h("div",{},C.apps.map((it,i)=>h("div",{class:"item"},h("div",{class:"head"},h("b",{},"اپ "+(i+1)),ctl(C.apps,i)),
+  h("div",{class:"grid2"},F("آیکون (ایموجی)",it,"icon",{max:4}),F("لینک (اختیاری، با https://)",it,"url",{ltr:1})),
+  ML("نام",it,"name"),ML("توضیح",it,"desc",1),ML("وضعیت (برچسب)",it,"status"))),
+  h("button",{onclick:()=>{C.apps.push({icon:"📱",url:"",name:{fa:"",en:"",ar:""},desc:{fa:"",en:"",ar:""},status:{fa:"در حال توسعه",en:"In development",ar:"قيد التطوير"}});setDirty(true);render()}},"+ افزودن اپلیکیشن"))}
+
+function contact(){
+ return h("div",{},C.social.map((it,i)=>{const sel=h("select",{},SOC.map(t=>h("option",{value:t,selected:t===it.type},t)));sel.onchange=()=>{it.type=sel.value;setDirty(true)};
+  return h("div",{class:"item"},h("div",{class:"head"},h("b",{},"لینک "+(i+1)),ctl(C.social,i)),
+   h("label",{},"نوع (آیکون)"),sel,F("متن نمایشی (برای ایمیل: خود آدرس ایمیل)",it,"handle",{ltr:1}),F("آدرس لینک (برای ایمیل خالی بماند)",it,"url",{ltr:1}))}),
+  h("button",{onclick:()=>{C.social.push({type:"link",handle:"",url:"https://"});setDirty(true);render()}},"+ افزودن راه ارتباطی"))}
+
+function security(){
+ const m=h("div",{class:"msg"}),o=h("input",{type:"password",autocomplete:"current-password"}),n1=h("input",{type:"password",autocomplete:"new-password"}),n2=h("input",{type:"password",autocomplete:"new-password"});
+ const tk=h("input",{class:"ltr",type:"password",autocomplete:"off",placeholder:"github_pat_..."});
+ return h("div",{},
+  h("div",{class:"card"},h("h2",{},"تغییر رمز پنل"),h("label",{},"رمز فعلی"),o,h("label",{},"رمز جدید (حداقل ۱۰ کاراکتر)"),n1,h("label",{},"تکرار رمز جدید"),n2,
+   h("div",{class:"row",style:"margin-top:14px"},h("button",{onclick:async()=>{m.className="msg";
+    try{await unseal(getBox(),o.value)}catch(e){m.className="msg e";m.textContent="رمز فعلی اشتباه است.";return}
+    if(n1.value.length<10||n1.value!==n2.value){m.className="msg e";m.textContent="رمز جدید کوتاه است یا تکرارش یکسان نیست.";return}
+    localStorage.setItem(LS,JSON.stringify(await seal(S,n1.value)));o.value=n1.value=n2.value="";m.className="msg ok";m.textContent="رمز تغییر کرد."}},"تغییر رمز"))),
+  h("div",{class:"card"},h("h2",{},"تعویض توکن گیت‌هاب"),h("label",{},"توکن جدید"),tk,h("div",{class:"row",style:"margin-top:14px"},h("button",{onclick:async()=>{
+    const pw=prompt("برای تایید، رمز پنل را وارد کنید:");if(!pw)return;
+    try{await unseal(getBox(),pw)}catch(e){m.className="msg e";m.textContent="رمز اشتباه است.";return}
+    const old=S.token;S.token=tk.value.trim();
+    try{const j=await gh("GET","");if(!j.permissions||!j.permissions.push)throw new Error("توکن اجازه نوشتن ندارد");localStorage.setItem(LS,JSON.stringify(await seal(S,pw)));tk.value="";m.className="msg ok";m.textContent="توکن تعویض شد."}
+    catch(e){S.token=old;m.className="msg e";m.textContent="خطا: "+e.message}}},"ذخیره توکن جدید"))),
+  m,
+  h("div",{class:"card"},h("h2",{},"نکات امنیتی"),h("p",{class:"note"},"امنیت واقعی از توکن می‌آید: بدون آن هیچ‌کس نمی‌تواند چیزی در مخزن تغییر دهد، حتی اگر صفحه admin.html را ببیند. رمز، توکن را روی دستگاه شما قفل می‌کند (PBKDF2 با ۶۰۰ هزار تکرار + AES-256-GCM)."),
+   h("p",{class:"note"},"توکن را فقط برای همین مخزن، با دسترسی Contents: Read and write و تاریخ انقضا بسازید. اگر دستگاهتان گم شد، توکن را در گیت‌هاب Revoke کنید.")))}
+
+lockScreen();
+})();
+</script>
+</body>
+</html>
