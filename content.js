@@ -148,46 +148,8 @@ window.__C={
  ],
  "apps": [
   {
-   "icon": "🧮",
-   "url": "",
-   "name": {
-    "fa": "ماشین‌حساب",
-    "en": "Calculator",
-    "ar": "الآلة الحاسبة"
-   },
-   "desc": {
-    "fa": "این اپلیکیشن در حال توسعه و آماده‌سازی برای انتشار است.",
-    "en": "This app is currently in development and being prepared for release.",
-    "ar": "هذا التطبيق قيد التطوير والتجهيز للإطلاق."
-   },
-   "status": {
-    "fa": "در حال توسعه",
-    "en": "In development",
-    "ar": "قيد التطوير"
-   }
-  },
-  {
-   "icon": "📿",
-   "url": "",
-   "name": {
-    "fa": "صلوات‌شمار",
-    "en": "Salavat Counter",
-    "ar": "عداد الصلوات"
-   },
-   "desc": {
-    "fa": "این اپلیکیشن در حال توسعه و آماده‌سازی برای انتشار است.",
-    "en": "This app is currently in development and being prepared for release.",
-    "ar": "هذا التطبيق قيد التطوير والتجهيز للإطلاق."
-   },
-   "status": {
-    "fa": "در حال توسعه",
-    "en": "In development",
-    "ar": "قيد التطوير"
-   }
-  },
-  {
    "icon": "📝",
-   "url": "",
+   "url": "https://myket.ir/app/www.hamyardabestaniman.com",
    "name": {
     "fa": "همیار دبستانی ",
     "en": "Hamyar dabestani",
@@ -197,6 +159,44 @@ window.__C={
     "fa": "آموزش مبانی پایه آموزش ، مکمل آموزشی",
     "en": "Teaching basic educational foundations, educational supplement\n",
     "ar": "تعليم الأساسيات التعليمية الأساسية، مُكمّل تعليمي"
+   },
+   "status": {
+    "fa": "منتشر شده در مایکت",
+    "en": "Published on Myket",
+    "ar": "نُشِرَ على مایکت"
+   }
+  },
+  {
+   "icon": "🎲",
+   "url": "https://therasuoli.github.io/Hafez-fal/#/welcome",
+   "name": {
+    "fa": "وب اپلیکیشن- فال حافظ ",
+    "en": "Web application - Hafez Fal",
+    "ar": "تطبيق ويب - فأل حافظ"
+   },
+   "desc": {
+    "fa": "فال حافظ با تعبیر | هر روز یک غزل\nنیت کنید و با اپلیکیشن «فال حافظ»، راز دل خود را از لسان‌الغیب بجویید. \n✨ شامل ۴۹۵ غزل با تعبیر اختصاصی\n✨ بدون نیاز به اینترنت\n✨ یادآور روزانه برای گرفتن فال",
+    "en": "Hafez Fortune with Interpretation | A New Ghazal Every Day\nMake a wish and unveil your destiny with the \"Hafez Fortune\" app.\n✨ 495 Ghazals with detailed interpretations\n✨ Completely offline & accessible anytime\n✨ Daily reminder to get your fortune",
+    "ar": "فأل حافظ مع التفسير | قصيدة جديدة كل يوم\nانوِ ما في قلبك واكتشف سرّك مع تطبيق \"فأل حافظ\".\n✨ يحتوي على 495 قصيدة مع تفسير خاص لكل منها\n✨ يعمل بدون الحاجة إلى الإنترنت\n✨ تذكير يومي لقراءة الفأل"
+   },
+   "status": {
+    "fa": "منتشر شده",
+    "en": "Published",
+    "ar": "منشور"
+   }
+  },
+  {
+   "icon": "📱",
+   "url": "",
+   "name": {
+    "fa": "",
+    "en": "",
+    "ar": ""
+   },
+   "desc": {
+    "fa": "",
+    "en": "",
+    "ar": ""
    },
    "status": {
     "fa": "در حال توسعه",
