@@ -184,25 +184,6 @@ window.__C={
     "en": "Published",
     "ar": "منشور"
    }
-  },
-  {
-   "icon": "📱",
-   "url": "",
-   "name": {
-    "fa": "",
-    "en": "",
-    "ar": ""
-   },
-   "desc": {
-    "fa": "",
-    "en": "",
-    "ar": ""
-   },
-   "status": {
-    "fa": "در حال توسعه",
-    "en": "In development",
-    "ar": "قيد التطوير"
-   }
   }
  ],
  "social": [
